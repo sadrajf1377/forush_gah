@@ -1,0 +1,90 @@
+{% extends 'admin_page_index.html' %}
+{% block title %} ویرایش محصول {% endblock %}
+{% block main_content %}
+    <script>
+    let index=0;
+    var image_urls=[];
+    var photos_to_delete=[];
+    var img_ids=[];
+    function change_image(value)
+    {
+
+        if(index+value<image_urls.length&&index+value>=0) {
+            index += value;
+            var cur_image = document.getElementById("currentpic");
+            cur_image.src = image_urls[index];
+        }
+    }
+    function add_image_url(url,id)
+    {
+        image_urls.push(url);
+        img_ids.push(id);
+    }
+    function set_first_picture()
+    {
+        var cur_image = document.getElementById("currentpic");
+            cur_image.src = image_urls[index];
+    }
+
+    function delete_photo()
+    {
+
+        photos_to_delete.push(img_ids[index]);
+
+        image_urls.splice(index,1);
+        img_ids.splice(index,1);
+
+        console.log(photos_to_delete);
+        document.getElementById('photos-to-delete').value=photos_to_delete;
+        index=0;
+
+        var cur_image = document.getElementById("currentpic");
+            cur_image.src = image_urls[index];
+    }
+
+
+</script>
+    <style>
+    p:hover
+    {
+        color: grey;
+        cursor: pointer;
+    }
+    </style>
+<div style="margin-right: 38%">
+
+<form style="background-color: lightgrey;box-shadow: 5px 5px 5px grey;height: fit-content;width: 38%">
+    {% for field in form %}
+        <div style="margin-right: 1%">
+        {{ field.label }}:
+        <br>
+        {{ field }}
+        <br>
+        </div>
+    {% endfor %}
+<p style="float: right;margin-right: 7%" onclick="change_image(1)">
+    بعدی
+</p>
+<img id="currentpic" style="height: 50%;width: 50%;float: right;margin-right: 7%">
+<p style="float: right;margin-right: 7%"onclick="change_image(-1)">
+    قبلی
+</p>
+
+<button style="border:2px whitesmoke ;border-radius: 20%;margin-right: 5px;margin-top: 5%
+;background-color: lightgreen;color: whitesmoke;margin-right: 30%">
+    ثبت تغییرات
+</button>
+{% for image in product.images_set.all %}
+<script>
+add_image_url('{{ image.picture.url }}','{{ image.id }}')
+</script>
+
+{% endfor %}
+<script>
+    set_first_picture();
+</script>
+</form>
+
+</div>
+
+{% endblock %}

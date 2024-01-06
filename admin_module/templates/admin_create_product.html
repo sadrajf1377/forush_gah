@@ -1,0 +1,131 @@
+{% extends 'admin_page_index.html' %}
+{% block title %} اضافه کردن محصول جدید {% endblock %}
+{% block main_content %}
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+<script>
+
+  function add_new(type,inp_id)
+  {
+
+     var val= document.getElementById(inp_id).value;
+      $.get('{% url 'add-color-brand-category_ajax'   %}'+'?model='+type+'&title='+val).then(res=>{
+          var doc=document.getElementById('id_'+type);
+     doc.innerHTML+=`<option value="${res.id}">  ${val} </option>`;
+
+      });
+
+  }
+  function add_image(element)
+  {
+    var doc=document.getElementById('images');
+    var files_list=element.files;
+    doc.innerHTML='';
+    if(element.files.length>6)
+    {
+        alert('تعداد عکس ها بیشتر از 6 می باشد!');
+        element.value='';
+    }
+
+    for(let i=0;i<files_list.length;i++)
+    {
+        var url=URL.createObjectURL(files_list[i]);
+        if(i%3===0 && i!=0)
+            doc.innerHTML+='<br><br>';
+        var element=`<img src="${url}" style="height: 90px;width: 90px;margin-left: 15px;border: 3px solid">`;
+
+
+        doc.innerHTML+=element;
+    }
+  }
+</script>
+<div class="container" style="margin-right: 45%">
+<form  enctype="multipart/form-data" action="{% url 'create-product' %}" method="post" style="position: relative;left: 15%">
+<ul>
+{% csrf_token %}
+    {% for field in fields %}
+        <li style="list-style-type: none">
+    {{ field.label }}:
+            <br>
+        {{ field }}
+
+        </li>
+    {% endfor %}
+</ul>
+<script>
+
+    function remove_category_brand_color(type)
+    {
+        switch (type)
+        {
+            case 'category':
+            {
+              var doc_list=document.getElementById('id_category');
+                for(const option of doc_list.options)
+                {
+                   if(option.selected)
+                 {
+                $.get('{% url 'remove-color-brand-category_ajax'  %}'+'?type='+type+'&id='+option.value).then(res=>{});
+                option.remove();
+                 }
+              }
+            }break;
+            case 'brand':
+            {
+              var doc_list=document.getElementById('id_brand');
+                for(const option of doc_list.options)
+                {
+                   if(option.selected)
+                 {
+                $.get('{% url 'remove-color-brand-category_ajax'  %}'+'?type='+type+'&id='+option.value).then(res=>{});
+                option.remove();
+                 }
+              }
+            }break;
+            case 'color':
+            {
+                var doc_list=document.getElementById('id_color');
+                for(const option of doc_list.options)
+                {
+                   if(option.selected)
+                 {
+                $.get('{% url 'remove-color-brand-category_ajax'  %}'+'?type='+type+'&id='+option.value).then(res=>{});
+                option.remove();
+                 }
+              }
+
+            }break;
+
+        }
+    }
+</script>
+<input type="file" name="img"  onchange="add_image(this)" multiple>
+<br>
+تصاویر محصول:
+<div id="images">
+
+</div>
+<br>
+<button   style="font-size: 15px;height: 30px;width: 90px;border:2px whitesmoke ;border-radius: 20%;margin-right: 5%;background-color: lightgreen;color: whitesmoke ">
+    ثبت محصول
+</button>
+<br>
+
+</form>
+<div class="container" style=";position: absolute;top:34.5%;margin-right: 15%">
+رنگ جدید:
+    <br>
+<input type="text" id="color"> <button onclick="add_new('color','color')">اضافه کردن</button>
+    <br>
+دسته بندی جدید:
+    <br>
+<input type="text" id="category"> <button onclick="add_new('category','category')">اضافه کردن</button>
+    <br>
+    برند جدید:
+    <br>
+<input type="text" id="brand"> <button onclick="add_new('brand','brand')">اضافه کردن</button>
+</div>
+</div>
+    <button style="position: absolute;top:51.75%;left:37%" onclick="remove_category_brand_color('category');">حذف دسته بندی انتخاب شده</button>
+    <button style="position: absolute;top:58.5%;left:37.5%" onclick="remove_category_brand_color('color');">حذف رنگ های انتخاب شده</button>
+<button style="position: absolute;top:69%;left:38.8%" onclick="remove_category_brand_color('brand');">حذف برند انتخاب شده</button>
+{% endblock %}

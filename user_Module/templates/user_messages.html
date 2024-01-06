@@ -1,0 +1,26 @@
+{% extends 'base_layout.html' %}
+{% block title %} پیام های کاربر  {% endblock %}
+
+{% block main_content %}
+<ul>
+{% for message in messages %}
+    <li style="list-style: none ;background-color: lightgrey;margin-top: 10%;box-shadow: 10px 20px 10px lightgrey;border-radius: 20px">
+    <h3 style="margin-right: 10px">متن پیام:
+
+    </h3>
+        <h4 style="margin-right: 15px">
+            {{ message.message }}
+        </h4>
+    <h3 style="margin-right: 10px"> تاریخ ایجاد پیام:
+
+    </h3>
+        <h4 style="margin-right: 15px">
+            {{ message.creation_date }}
+        </h4>
+
+
+    </li>
+
+    {% endfor %}
+</ul>
+{% endblock %}
